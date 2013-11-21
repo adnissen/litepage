@@ -31,7 +31,13 @@ get '/' do
 end
 
 get '/:name' do
-  "#{params[:name]}"
+  page = pages.find_one("name" => "#{params[:name]}")
+  if page == nil
+  	"404"
+  else
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, :autolink => true, :space_after_headers => true)
+    markdown.render(page['markdown'])
+  end
 end
 
 post '/makePage' do
@@ -40,6 +46,10 @@ post '/makePage' do
   pageName = params[:name]
   if markdown == nil or pageName == nil
   	puts "error, bad post request"
+  	return
+  end
+  if pages.find_one("name" => pageName).count != 0
+  	puts "there's already a page with that name"
   	return
   end
   doc = {"name" => pageName, "markdown" => markdown}
