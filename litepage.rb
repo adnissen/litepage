@@ -3,6 +3,9 @@ require 'redcarpet'
 require 'mongo'
 require 'uri'
 
+include Mongo
+
+=begin
 def get_connection
   return @db_connection if @db_connection
   db = URI.parse(ENV['MONGOHQ_URL'])
@@ -13,12 +16,33 @@ def get_connection
 end
 
 db = get_connection
+=end
+
+# this is just for testing purposes, of course the mongo server should be the one on heroku
+mongo_client = MongoClient.new("localhost", 27017)
+db = mongo_client.db("mydb")
+db = MongoClient.new("localhost", 27017).db("mydb")
+
+# a document in the pages collection is just a page title with the markdown
+pages = db.collection("testCollection")
 
 get '/' do
   
 end
 
+get '/:name' do
+  "#{params[:name]}"
+end
+
 post '/makePage' do
-  markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, :autolink => true, :space_after_headers => true)
-  puts params[:markdown]
+  # grab the markdown from their post request
+  markdown = params[:markdown]
+  pageName = params[:name]
+  if markdown == nil or pageName == nil
+  	puts "error, bad post request"
+  	return
+  end
+  doc = {"name" => pageName, "markdown" => markdown}
+  id = pages.insert(doc)
+  puts id
 end
