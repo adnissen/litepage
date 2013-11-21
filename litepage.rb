@@ -15,11 +15,7 @@ end
 db = get_connection
 
 get '/' do
-  puts "Collections"
-  puts "==========="
-  collections = db.collection_names
-  puts collections
-  puts
+  
 end
 
 post '/makePage' do
