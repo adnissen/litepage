@@ -24,7 +24,7 @@ db = mongo_client.db("mydb")
 db = MongoClient.new("localhost", 27017).db("mydb")
 
 # a document in the pages collection is just a page title with the markdown
-pages = db.collection("testCollection")
+pages = db.collection("pages")
 
 get '/' do
   File.read(File.join('public', 'index.html'))
