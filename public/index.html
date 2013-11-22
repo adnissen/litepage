@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LitePage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  <style type="text/css">
+  h1, h2, p, small{
+  	font-family: 'Open Sans', sans-serif;
+  }
+
+  .jumbotron{
+  	background-color: #C0392B;
+  	color: #FFFFFF;
+  }
+
+  textarea{
+  	width: 100%;
+  	resize: none;
+  }
+
+  .submitBtn{
+  	background: #C0392B;
+  	color: #FFFFFF;
+  }
+  </style>
+  </head>
+  <body>
+  <div class="jumbotron">
+		  <h1>Create a beautiful page in seconds</h1>
+		  <h2>Introducting LitePage 2.0</h2>
+  </div>
+
+    <div class="container">
+      
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <h1 class="text-center">A page for anything, right now* <br><small class="text-center">*with the power of markdown</small></h1>
+        </div>
+      </div>
+      <br>
+      
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <p>Sometimes you just need to get a nice looking page up quickly, but HTML is too slow and cumbersome and WYSIWYG editors leave a lot to be desired. Enter markdown and LitePage. The power to format right at your fingertips, but totally optional. You don't want to write a bunch of css, you just want a clean page to get your information out there.</p>
+          <h4>Just scroll down.</h4>
+        </div>
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+        <p>Pick a url for this page. Be creative!</p>
+        <strong>litepage.me/ </strong><input id="name" type="text"></input><br><br>
+        <p>Put your content in here:</p>
+        <textarea id="editor" rows="15"></textarea><br><br>
+        <button id="submitBtn" type="button" class="btn btn-default submitBtn">Submit</button>
+        </div>
+      </div>
+
+      <br>
+      <br>
+
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      $('#submitBtn').click(function() {
+        $.ajax({
+          type: "POST",
+          url: "/makePage",
+          data: {markdown: $('#editor').val(), name: $('#name').val()}
+        });
+      });
+    </script>
+  </body>
+</html>

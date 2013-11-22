@@ -27,7 +27,7 @@ db = MongoClient.new("localhost", 27017).db("mydb")
 pages = db.collection("testCollection")
 
 get '/' do
-  
+  File.read(File.join('public', 'index.html'))
 end
 
 get '/:name' do
@@ -48,11 +48,11 @@ post '/makePage' do
   	puts "error, bad post request"
   	return
   end
-  if pages.find_one("name" => pageName).count != 0
+  if pages.find("name" => pageName).count != 0
   	puts "there's already a page with that name"
   	return
   end
   doc = {"name" => pageName, "markdown" => markdown}
   id = pages.insert(doc)
-  puts id
+  puts "page created: " + id.to_s
 end
