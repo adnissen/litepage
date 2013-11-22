@@ -40,11 +40,21 @@ get '/:name' do
   end
 end
 
+get '/:name/edit' do
+  page = pages.find_one("name" => "#{params[:name]}")
+  if page == nil
+    "404"
+  else
+    "editing"
+  end
+end
+
 post '/makePage' do
   # grab the markdown from their post request
   markdown = params[:markdown]
   pageName = params[:name]
-  if markdown == nil or pageName == nil
+  password = params[:password]
+  if markdown == nil or pageName == nil or password == nil
   	puts "error, bad post request"
   	return
   end
@@ -52,7 +62,7 @@ post '/makePage' do
   	puts "there's already a page with that name"
   	return
   end
-  doc = {"name" => pageName, "markdown" => markdown}
+  doc = {"name" => pageName, "markdown" => markdown, "password" => password}
   id = pages.insert(doc)
   puts "page created: " + id.to_s
 end

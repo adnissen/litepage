@@ -65,6 +65,8 @@
         <div class="col-md-8 col-md-offset-2">
         <p>Pick a url for this page. Be creative!</p>
         <strong>litepage.me/ </strong><input id="name" type="text"></input><br><br>
+        <p>Enter a password so you can come back and edit the page later: </p>
+     	<input id="password" type="text"></input><br><br>
         <p>Put your content in here:</p>
         <textarea id="editor" rows="15"></textarea><br><br>
         <button id="submitBtn" type="button" class="btn btn-default submitBtn">Submit</button>
@@ -86,7 +88,7 @@
         $.ajax({
           type: "POST",
           url: "/makePage",
-          data: {markdown: $('#editor').val(), name: $('#name').val()}
+          data: {markdown: $('#editor').val(), name: escape($('#name').val()), password: $('#password').val()}
         });
       });
     </script>
