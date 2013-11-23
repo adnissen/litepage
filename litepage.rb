@@ -2,8 +2,22 @@ require 'sinatra'
 require 'redcarpet'
 require 'mongo'
 require 'uri'
+require 'digest/sha1'
+require 'json'
 
 include Mongo
+
+class Encode
+  def initialize(key)
+    @salt= key
+  end
+
+  def encrypt(text)
+     Digest::SHA1.hexdigest("--#{@salt}--#{text}--")
+  end
+end
+
+e = Encode.new("This is a very hard key.")
 
 =begin
 def get_connection
@@ -40,12 +54,27 @@ get '/:name' do
   end
 end
 
-get '/:name/edit' do
+get '/:name/auth' do
   page = pages.find_one("name" => "#{params[:name]}")
   if page == nil
     "404"
   else
-    "editing"
+    File.read(File.join('public', 'edit.html'))
+  end
+end
+
+post '/:name/auth' do
+  page = pages.find_one("name" => "#{params[:name]}")
+  if page['password'] == e.encrypt(params[:hash])
+    content_type :json 
+    {:redirect => e.encrypt(params[:hash])}.to_json
+  end
+end
+
+get '/:name/auth/:key' do
+  page = pages.find_one("name" => "#{params[:name]}")
+  if page['password'] == "#{params[:key]}"
+    puts "free to edit"
   end
 end
 
@@ -53,7 +82,7 @@ post '/makePage' do
   # grab the markdown from their post request
   markdown = params[:markdown]
   pageName = params[:name]
-  password = params[:password]
+  password = e.encrypt(params[:password])
   if markdown == nil or pageName == nil or password == nil
   	puts "error, bad post request"
   	return
