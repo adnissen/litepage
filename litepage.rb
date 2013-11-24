@@ -51,8 +51,18 @@ get '/:name' do
   if page == nil
   	"404"
   else
+    File.read(File.join(settings.public_folder, 'pageView.html'))
+  end
+end
+
+post '/:name' do
+  page = pages.find_one("name" => "#{params[:name]}")
+  if page == nil
+    "404"
+  else
+    content_type :json
     markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, :autolink => true, :space_after_headers => true)
-    markdown.render(page['markdown'])
+    {:content => markdown.render(page['markdown'])}.to_json
   end
 end
 
