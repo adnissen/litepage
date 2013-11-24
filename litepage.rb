@@ -7,6 +7,8 @@ require 'json'
 
 include Mongo
 
+#set :static_cache_control, [:public, :max_age => 300]
+
 class Encode
   def initialize(key)
     @salt= key
@@ -41,7 +43,7 @@ db = MongoClient.new("localhost", 27017).db("mydb")
 pages = db.collection("pages")
 
 get '/' do
-  File.read(File.join('public', 'index.html'))
+  File.read(File.join(settings.public_folder, 'index.html'))
 end
 
 get '/:name' do
@@ -57,9 +59,9 @@ end
 get '/:name/auth' do
   page = pages.find_one("name" => "#{params[:name]}")
   if page == nil
-    "404"
+    '404'
   else
-    File.read(File.join('public', 'edit.html'))
+    File.read(File.join(settings.public_folder, 'edit.html'))
   end
 end
 
