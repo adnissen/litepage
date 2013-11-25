@@ -54,10 +54,12 @@ post '/makePage' do
   password = e.encrypt(params[:password])
   puts "starting to make the page"
   if markdown == nil or pageName == nil or password == nil
+    status 403
     puts "error, bad post request"
     return
   end
   if pages.find("name" => pageName).count != 0
+    status 403
     puts "there's already a page with that name"
     return
   end
@@ -100,6 +102,8 @@ post '/:name/auth' do
   if page['password'] == e.encrypt(params[:hash])
     content_type :json 
     {:redirect => e.encrypt(params[:hash])}.to_json
+  else
+    status 401
   end
 end
 
@@ -107,7 +111,10 @@ get '/:name/auth/:key' do
   page = pages.find_one("name" => "#{params[:name]}")
   if page['password'] == "#{params[:key]}"
     File.read(File.join(settings.public_folder, 'edit.html'))
+  else
+    status 401
   end
+
 end
 
 post '/:name/auth/:key' do
@@ -118,6 +125,8 @@ post '/:name/auth/:key' do
   page = pages.find_one("name" => "#{params[:name]}")
   if page['password'] == "#{params[:key]}"
     pages.update({"name" => "#{params[:name]}"}, {"$set" => {"markdown" => markdown}})
+  else
+    status 401
   end
   "done"
 end

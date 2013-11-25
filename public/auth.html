@@ -55,11 +55,13 @@
         $.ajax({
           type: "POST",
           url: document.location.pathname,
-          data: {hash: $('#password').val()}
+          data: {hash: $('#password').val()},
+          statusCode: {
+            200: function(data){
+              document.location = document.location.href + "/" + data.redirect;
+            }
+          }
         })
-        .done(function(data){
-          document.location = document.location.href + "/" + data.redirect;
-        });
       });
     </script>
   </body>

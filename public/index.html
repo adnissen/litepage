@@ -88,7 +88,12 @@
         $.ajax({
           type: "POST",
           url: "/makePage",
-          data: {markdown: $('#editor').val(), name: escape($('#name').val()), password: $('#password').val()}
+          data: {markdown: $('#editor').val(), name: escape($('#name').val()), password: $('#password').val()},
+          statusCode: {
+            200: function() {
+              document.location = document.location.href + escape($('#name').val());
+            }
+          }
         });
       });
     </script>

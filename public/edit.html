@@ -56,11 +56,13 @@
         $.ajax({
           type: "POST",
           url: document.location.pathname,
-          data: {markdown: $('#editor').val()}
+          data: {markdown: $('#editor').val()},
+          statusCode: {
+            200: function(){
+              alert("done editing");
+            }
+          }
         })
-        .done(function(data){
-          
-        });
       });
     </script>
   </body>
