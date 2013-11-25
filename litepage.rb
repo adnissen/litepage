@@ -119,4 +119,5 @@ post '/:name/auth/:key' do
   if page['password'] == "#{params[:key]}"
     pages.update({"name" => "#{params[:name]}"}, {"$set" => {"markdown" => markdown}})
   end
+  "done"
 end
