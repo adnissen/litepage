@@ -91,7 +91,7 @@ get '/:name/auth' do
   if page == nil
     '404'
   else
-    File.read(File.join(settings.public_folder, 'edit.html'))
+    File.read(File.join(settings.public_folder, 'auth.html'))
   end
 end
 
@@ -106,6 +106,17 @@ end
 get '/:name/auth/:key' do
   page = pages.find_one("name" => "#{params[:name]}")
   if page['password'] == "#{params[:key]}"
-    puts "free to edit"
+    File.read(File.join(settings.public_folder, 'edit.html'))
+  end
+end
+
+post '/:name/auth/:key' do
+  # THERE IS AN ERROR THROWN HERE, BUT THE UPDATE GOES THROUGH FINE. I HAVE NO IDEA WHY THAT IS
+
+  # ERROR TypeError: no implicit conversion of Array into String
+  markdown = params[:markdown]
+  page = pages.find_one("name" => "#{params[:name]}")
+  if page['password'] == "#{params[:key]}"
+    pages.update({"name" => "#{params[:name]}"}, {"$set" => {"markdown" => markdown}})
   end
 end

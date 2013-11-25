@@ -4,7 +4,7 @@
     <title>LitePage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -35,31 +35,30 @@
   </style>
   </head>
   <body>
+  <div class="jumbotron">
+		  <h1>Create a beautiful page in seconds</h1>
+		  <h2>Introducting LitePage 2.0</h2>
+  </div>
 
     <div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-        <p>Put your content in here:</p>
-        <textarea id="editor" rows="15"></textarea><br><br>
-        <button id="submitBtn" type="button" class="btn btn-default submitBtn">Submit</button>
-        </div>
-    </div>
+    <input type="text" id="password"></input><br>
+    <button id="submitBtn" type="button" class="btn btn-default submitBtn">Submit</button>
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
       $('#submitBtn').click(function() {
         $.ajax({
           type: "POST",
           url: document.location.pathname,
-          data: {markdown: $('#editor').val()}
+          data: {hash: $('#password').val()}
         })
         .done(function(data){
-          
+          document.location = document.location.href + "/" + data.redirect;
         });
       });
     </script>
