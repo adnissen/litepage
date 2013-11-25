@@ -19,8 +19,6 @@ class Encode
   end
 end
 
-e = Encode.new("This is a very hard key.")
-
 =begin
 def get_connection
   return @db_connection if @db_connection
@@ -31,6 +29,7 @@ def get_connection
   @db_connection
 end
 
+e = Encode.new(ENV['HASH_KEY'])
 db = get_connection
 =end
 
@@ -39,6 +38,8 @@ mongo_client = MongoClient.new("localhost", 27017)
 db = mongo_client.db("mydb")
 db = MongoClient.new("localhost", 27017).db("mydb")
 
+e = Encode.new("This is a very hard key.")
+
 # a document in the pages collection is just a page title with the markdown
 pages = db.collection("pages")
 
@@ -46,10 +47,29 @@ get '/' do
   File.read(File.join(settings.public_folder, 'index.html'))
 end
 
+post '/makePage' do
+  # grab the markdown from their post request
+  markdown = params[:markdown]
+  pageName = params[:name]
+  password = e.encrypt(params[:password])
+  puts "starting to make the page"
+  if markdown == nil or pageName == nil or password == nil
+    puts "error, bad post request"
+    return
+  end
+  if pages.find("name" => pageName).count != 0
+    puts "there's already a page with that name"
+    return
+  end
+  doc = {"name" => pageName, "markdown" => markdown, "password" => password}
+  id = pages.insert(doc)
+  puts "page created: " + id.to_s
+end
+
 get '/:name' do
   page = pages.find_one("name" => "#{params[:name]}")
   if page == nil
-  	"404"
+    "404"
   else
     File.read(File.join(settings.public_folder, 'pageView.html'))
   end
@@ -88,22 +108,4 @@ get '/:name/auth/:key' do
   if page['password'] == "#{params[:key]}"
     puts "free to edit"
   end
-end
-
-post '/makePage' do
-  # grab the markdown from their post request
-  markdown = params[:markdown]
-  pageName = params[:name]
-  password = e.encrypt(params[:password])
-  if markdown == nil or pageName == nil or password == nil
-  	puts "error, bad post request"
-  	return
-  end
-  if pages.find("name" => pageName).count != 0
-  	puts "there's already a page with that name"
-  	return
-  end
-  doc = {"name" => pageName, "markdown" => markdown, "password" => password}
-  id = pages.insert(doc)
-  puts "page created: " + id.to_s
 end
