@@ -65,6 +65,7 @@ post '/makePage' do
   end
   doc = {"name" => pageName, "markdown" => markdown, "password" => password}
   id = pages.insert(doc)
+  puts pageName;
   puts "page created: " + id.to_s
 end
 
